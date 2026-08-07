@@ -59,16 +59,31 @@ pub enum ProjectionScenario {
 ///
 /// The earlier implementation took the most recent N reward dates and computed a trailing
 /// 7-day rolling rate for each, so every day's reward appeared in up to seven windows. The
-/// resulting samples were heavily autocorrelated and the distribution artificially tight:
-/// on real data, non-overlapping windows spread 1.81x from p10 to p90 where overlapping
-/// windows spread only 1.50x, and the overlapping p10 sat 19% high. That made the
-/// pessimistic scenario less pessimistic than the evidence supports — the wrong direction
-/// for a retirement estimate to err.
+/// samples were therefore autocorrelated: one exceptional week could populate the top
+/// decile with seven copies of itself. That argument is structural and does not need a
+/// measurement to stand.
+///
+/// **No spread ratio is quoted here, deliberately.** An earlier version of this comment
+/// claimed non-overlapping windows spread 1.81x from p10 to p90 where overlapping windows
+/// spread only 1.50x, with the overlapping p10 sitting 19% high. Re-measured on 2026-08-06,
+/// neither figure reproduces. Holding the sample fixed — the same 30 most recent reward
+/// dates the old implementation used, spanning 37 calendar days — de-overlapping moves the
+/// spread from 1.4965x to 1.5057x, under 1%, and moves p10 by about the same. The spread is
+/// governed by the lookback, not by the overlap: 1.34x at 90 days, 1.38x at 365, 1.86x at
+/// 730. 1.81x corresponds to no lookback this code uses; it appears only between roughly
+/// 672 and 713 days. Substituting whichever ratio happens to fit would repeat the original
+/// error, so none is given.
+///
+/// What does reproduce is *where* the change landed. Recomputing the bands over
+/// non-overlapping windows on a 90-day lookback left p10 within 1% and dropped p90 by 11%.
+/// The upper tail is exactly where the autocorrelation argument predicts the distortion,
+/// which means the defect flattered the OPTIMISTIC scenario, not the pessimistic one.
 ///
 /// # Why a window at all
 ///
-/// Rewards accrue only on days when proposals settle: 20.6% of dates in a real three-year
-/// history carry a portfolio-wide reward of exactly zero. A raw daily distribution
+/// Rewards accrue only on days when proposals settle: 20.7% of dates in a real multi-year
+/// history carry a portfolio-wide reward of exactly zero (measured 2026-08-07; it was 20.6%
+/// at 2026-01-07, and drifts as history accumulates). A raw daily distribution
 /// therefore has a 10th percentile of 0.0000, which would project "never". Excluding
 /// zero-days is worse — it discards every low observation and leaves a distribution of
 /// payout sizes rather than yields, pushing p10 *above* the windowed estimate. A window
