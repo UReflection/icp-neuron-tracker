@@ -1,0 +1,22 @@
+[identity]
+pem_file = "./tracker-hotkey.pem"
+
+[ic]
+governance_canister = "rrkah-fqaaa-aaaaa-aaaaq-cai"
+ic_url = "https://ic0.app"
+
+[neurons]
+ids = [
+    "10000000000000000001",
+    "1000000000000000003",
+    "10000000000000000002",
+    "1000000000000000005"
+]
+
+[tracking]
+history_file = "neuron_history.db"
+snapshot_on_run = true
+
+[display]
+show_individual_neurons = true
+show_portfolio_summary = true

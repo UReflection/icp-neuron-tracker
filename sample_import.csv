@@ -1,0 +1,58 @@
+# ICP Neuron Tracker - Historical Data Import Sample
+# This file demonstrates the correct CSV format for importing neuron snapshots
+#
+# IMPORTANT: Two CSV Formats are Supported!
+#
+# ========================================
+# FORMAT 1: Simplified Format (Recommended for Excel Users!)
+# ========================================
+# This format uses metadata comments to specify neuron configuration and accepts
+# age_bonus_multiplier directly from NNS dapp data.
+#
+# Neuron Configuration Metadata (one line per neuron):
+# neuron_id: 10000000000000000001, created_date: 2021-05-17, dissolve_delay_years: 8
+# neuron_id: 100000000000000004, created_date: 2021-05-18, dissolve_delay_years: 8
+#
+# Required columns: neuron_id, snapshot_date, stake_e8s, staked_maturity_e8s, voting_power, age_bonus_multiplier
+# Optional columns: available_maturity_e8s (defaults to 0 if not provided)
+#
+# All amount fields accept BOTH decimal (ICP) and integer (e8s) formats:
+# - stake_e8s: Can be 1000.00000000 (ICP) OR 100000000000 (e8s)
+# - staked_maturity_e8s: Can be 250.00000000 (ICP) OR 25000000000 (e8s)
+# - available_maturity_e8s: Can be 5.25 (ICP) OR 525000000 (e8s)
+# - voting_power: Can be 3000.00000000 OR 300000000000
+#
+# Decimal values are automatically multiplied by 100,000,000 (10^8) for storage.
+#
+# ========================================
+# FORMAT 2: Traditional Format (Full Control)
+# ========================================
+# Use this format if you need precise control over all fields or don't have neuron metadata.
+#
+# Required columns: neuron_id, snapshot_date, stake_e8s, staked_maturity_e8s, available_maturity_e8s,
+#                   voting_power, dissolve_delay_seconds, age_seconds, created_timestamp_seconds
+#
+# All amount fields accept both decimal and integer formats (same as simplified format).
+#
+# ========================================
+# Instructions:
+# ========================================
+# 1. Choose your format (simplified or traditional)
+# 2. If using simplified format, add metadata comments at the top (one per neuron)
+# 3. Replace the sample data below with your actual historical data from Excel
+# 4. You can use decimal format (ICP amounts) directly from Excel
+# 5. Dates must be in YYYY-MM-DD format
+# 6. Run: cargo run -- import --file sample_import.csv
+#
+# ========================================
+# Example: Simplified Format
+# ========================================
+# Neuron Configuration Metadata
+# neuron_id: 1000000000000000003, created_date: 2021-05-17, dissolve_delay_years: 8
+# neuron_id: 10000000000000000002, created_date: 2021-05-18, dissolve_delay_years: 8
+#
+neuron_id,snapshot_date,stake_e8s,staked_maturity_e8s,voting_power,age_bonus_multiplier
+1000000000000000003,2022-10-20,500.00000000,1.50000000,900.00000000,1.02395
+1000000000000000003,2022-10-21,500.00000000,2.00000000,901.00000000,1.02408
+10000000000000000002,2022-10-20,400.00000000,1.50000000,800.00000000,1.02395
+10000000000000000002,2022-10-21,400.00000000,2.00000000,801.00000000,1.02408

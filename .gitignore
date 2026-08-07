@@ -1,0 +1,12 @@
+/target
+*.pem
+*.db
+config.toml
+.vscode
+
+# Exports carry real neuron IDs, stake, maturity and voting power — the same data
+# class as the key file above. This line read `.csv` until 2026-08-06, which matches
+# only a file literally named `.csv`, so every export was tracked while README and the
+# usage guide both stated `*.csv` was ignored.
+*.csv
+!sample_import.csv
